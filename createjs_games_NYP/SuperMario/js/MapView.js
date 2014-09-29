@@ -126,7 +126,6 @@ MapView.prototype.update = function() {
 MapView.prototype.destoryTile = function(row, col) {
 			this.tileClone[row][col].destory();
 			this.firstLevel[row][col] = -1;
-			console.log(this.firstLevel[row][col]);
 };
 
 

@@ -83,12 +83,6 @@ Game.prototype.keyBoardUp = function(e) {
 		}
 	}
 	
-	if(this.keyBoard.getKeyPressThroughtName("w")){
-		this.fireEffect[2].setVisibleTrue();
-		this.fireEffect[2].play();
-		this.fireEffect[2].setViewPos(150,150);
-	}
-	
 	this.keyBoard.setKeyPress(e.keyCode,false);
 };
 /**
@@ -98,13 +92,14 @@ Game.prototype.onMouseClick = function(e) {
 
 };
 Game.prototype.tick = function(e) {
-
 	if(this.timeCountDown < 100 && !this.musicChange){
 		createjs.Sound.stop("bgm");
 		createjs.Sound.play("bgm1");
 		this.musicChange = true;
 	}
-	this.timeCountDown -= (e.delta/1000);
+	if(this.timeCountDown > 0){
+		this.timeCountDown -= (e.delta/1000);
+	}
 	
 	this.hud.update(this.timeCountDown, this.scoreCount, this.coinCount);
 	
@@ -246,16 +241,24 @@ Game.prototype.tick = function(e) {
 	if(this.mario.gameOver && !this.mario.win){
 		this.hud.ShowGameOver();
 	}
-	
 	if(this.getMarioTileIDAt(false,true) == 1 && this.mario.size != "small"){
 		var row = Math.floor((this.mario.y) / this.mapView.tileSheet.frames.height);
 		var col = Math.floor(((this.mario.x ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
 		this.mapView.destoryTile(row-1,col);
+		this.mapModule.setID(row-1,col,-1);
 	}
 	
 	if(this.getMarioTileIDAt(true,false) == 379 || this.getMarioTileIDAt(true,false) == 36){
 		this.mario.win = true;
 		this.hud.ShowWin();
+	}
+	if(this.mario.win && !this.mario.visible && this.fireEffect[2].index == -1){
+		this.fireEffect[2].setVisibleTrue();
+		this.fireEffect[2].play();
+		this.fireEffect[2].setViewPos(250,150);
+		this.fireEffect[2].index +=1;
+		this.scoreCount += this.timeCountDown * 10;
+		this.timeCountDown = 0;
 	}
 	
 
@@ -444,7 +447,10 @@ Game.prototype.reset = function() {
 	}
 	this.keyBoard.reset();
 	this.hud.reset();
+	
 	this.mapView.reset();
+	this.mapModule.reset();
+	this.fireEffect[2].index = -1;
 };
 /**
  * @ start

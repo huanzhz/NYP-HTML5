@@ -25,7 +25,7 @@ function FireEffect(x, y, type) {
 			
 			firework: {
 				frames: [0, 1, 2],
-				speed : 0.06,
+				speed : 0.2,
 			}
 		}
 	};
@@ -41,9 +41,11 @@ function FireEffect(x, y, type) {
 	
 	this.x = x;
 	this.y = y;
+	this.index = -1;
 }
 
 FireEffect.prototype.setVisibleTrue = function(){
+	this.index = -1;
 	this.visible = true;
 };
 
@@ -61,8 +63,27 @@ FireEffect.prototype.play = function(){
 };
 
 FireEffect.prototype.update = function(){
-	if(this.fireBallEffectAnimation.currentFrame == 2){
-		this.visible = false;
-		this.fireBallEffectAnimation.gotoAndStop(this.currentAnimation);
+	if(this.currentAnimation == "fireball"){
+		if(this.fireBallEffectAnimation.currentFrame == 2){
+			this.visible = false;
+			this.fireBallEffectAnimation.gotoAndStop(this.currentAnimation);
+		}
+	}else if(this.currentAnimation == "firework"){
+		if(this.fireBallEffectAnimation.currentFrame == 2 && this.visible == true || this.index > 50){
+			this.visible = false;
+			this.fireBallEffectAnimation.gotoAndStop(this.currentAnimation);
+			this.x += 15 * (Math.sin(this.index * this.index) + 1.5);
+			this.y -= 10 * (Math.sin(this.index * this.index) + 1);
+			this.index++;
+		}
+		else if(this.visible == false &&  this.index != 0 && this.index != -1){
+			if( this.index % 10 == 0){
+				this.visible = true;
+				this.play();
+			}
+			else{
+				this.index++;
+			}
+		}
 	}	
 };

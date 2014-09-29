@@ -20,7 +20,7 @@ function MapModule(mapRow , mapCol){
 	
 	this.walkableTile = [-1,11,12,13,14,44,45,46 ,272 ,274,273 ,307,306,305, 375,379 ];
 	
-	this.orginalLevel = this.firstLevel;
+	this.orginalLevel = Util.deepCopy(this.firstLevel);
 	
 }
 
@@ -290,7 +290,7 @@ MapModule.prototype.createVPiple =  function (startX , startY , height ){
 	
 };
 MapModule.prototype.getMapData =  function (){
-	return this.firstLevel.slice(0);
+	return this.firstLevel;
 };
 
 MapModule.prototype.walkable =  function (row, col) {
@@ -304,6 +304,15 @@ MapModule.prototype.walkable =  function (row, col) {
 		}
 	}
 		return true;
+};
+
+
+MapModule.prototype.setID = function(row,col,id) {
+	if(row < 0 || col < 0 || row > this.mapHeight -1 ||  col > this.mapWidth -1 ){
+	}
+	else{
+		this.firstLevel[row][col] = id;
+	}
 };
 
 MapModule.prototype.getID = function(row,col) {
